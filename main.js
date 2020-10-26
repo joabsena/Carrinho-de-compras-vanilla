@@ -22,26 +22,8 @@ const produtos = [
   },
 ];
 
-const carrinhoItens = {
-  2: {
-    id: '2',
-    nome: 'JSRaiz para NodeJS',
-    preco: 500,
-    descricao: 'O melhor curso de NodeJS',
-    imagem: 'https://picsum.photos/500/300',
-    quantidade: 1,
-  },
-  3: {
-    id: '3',
-    nome: 'JSRaiz para React',
-    preco: 1000,
-    descricao: 'O melhor curso de React',
-    imagem: 'https://picsum.photos/500/300',
-    quantidade: 2,
-  },
-};
-
-function renderizaProduto(produto) {
+const carrinhoItens = {};
+function renderizaProduto(produto, index) {
   return `
     <div class="col-sm-4 mb-3">
       <div class="card loja__item">
@@ -54,7 +36,7 @@ function renderizaProduto(produto) {
           <h5 class="card-title">${produto.nome}</h5>
           <small>R$${produto.preco}</small>
           <p class="card-text">${produto.descricao}</p>
-          <button class="btn btn-primary">Adicionar</button>
+          <button data-index="${index}" class="btn btn-primary btn-add">Adicionar</button>
         </div>
       </div>
   </div>
@@ -63,7 +45,7 @@ function renderizaProduto(produto) {
 function renderizaProdutos() {
   let html = '';
   for (let i = 0; i < produtos.length; i++) {
-    html = html + renderizaProduto(produtos[i]);
+    html = html + renderizaProduto(produtos[i], i);
   }
   return html;
 }
@@ -87,8 +69,24 @@ function renderizaCarrinho() {
   for (let produtoId in carrinhoItens) {
     html = html + renderizaItemCarrinho(carrinhoItens[produtoId]);
   }
-  return html;
+  document.querySelector('.carrinho__itens').innerHTML = html;
 }
 
+document.body.addEventListener('click', function (event) {
+  const elemento = event.target;
+
+  if (elemento.classList.contains('btn-add')) {
+    const index = parseInt(elemento.getAttribute('data-index'), 10);
+    const produto = produtos[index];
+
+    if (!carrinhoItens[produto.id]) {
+      carrinhoItens[produto.id] = produto;
+      carrinhoItens[produto.id].quantidade = 1;
+    } else {
+      carrinhoItens[produto.id].quantidade += 1;
+    }
+    renderizaCarrinho();
+  }
+});
+
 document.querySelector('.loja').innerHTML = renderizaProdutos();
-document.querySelector('.carrinho__itens').innerHTML = renderizaCarrinho();
