@@ -1,4 +1,4 @@
-# Carrinho-de-compras-vanilla
+# Carrinho de compras reativo com JavaScript Vanilla
 
 Carrinho de compras com JavaScript Vanilla
 
