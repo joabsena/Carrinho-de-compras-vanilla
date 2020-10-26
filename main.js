@@ -23,6 +23,7 @@ const produtos = [
 ];
 
 const carrinhoItens = {};
+
 function renderizaProduto(produto, index) {
   return `
     <div class="col-sm-4 mb-3">
@@ -59,7 +60,9 @@ function renderizaItemCarrinho(produto) {
           Preço unidade: R$${produto.preco} | Quantidade: ${produto.quantidade}
         </p>
         <p class="card-text">Valor: R$${produto.preco * produto.quantidade}</p>
-        <button class="btn btn-danger btn-sm">Remover</button>
+        <button data-produto-id="${
+          produto.id
+        }" class="btn btn-danger btn-sm btn-remove">Remover</button>
       </div>
     </div>
   `;
@@ -79,6 +82,7 @@ function renderCarrinhoTotal() {
       total +
       carrinhoItens[produtoId].preco * carrinhoItens[produtoId].quantidade;
   }
+
   document.querySelector(
     '.carrinho__total'
   ).innerHTML = `<h6>Total: <strong> R$${total}</strong></h6>`;
@@ -102,6 +106,17 @@ document.body.addEventListener('click', function (event) {
     const produto = produtos[index];
 
     adicionaItemNoCarrinho(produto);
+  }
+
+  if (elemento.classList.contains('btn-remove')) {
+    const produtoId = elemento.getAttribute('data-produto-id');
+    if (carrinhoItens[produtoId].quantidade <= 1) {
+      delete carrinhoItens[produtoId];
+    } else {
+      --carrinhoItens[produtoId].quantidade;
+    }
+    renderizaCarrinho();
+    renderCarrinhoTotal();
   }
 });
 
