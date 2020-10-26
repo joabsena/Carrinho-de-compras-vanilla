@@ -72,6 +72,28 @@ function renderizaCarrinho() {
   document.querySelector('.carrinho__itens').innerHTML = html;
 }
 
+function renderCarrinhoTotal() {
+  let total = 0;
+  for (let produtoId in carrinhoItens) {
+    total =
+      total +
+      carrinhoItens[produtoId].preco * carrinhoItens[produtoId].quantidade;
+  }
+  document.querySelector(
+    '.carrinho__total'
+  ).innerHTML = `<h6>Total: <strong> R$${total}</strong></h6>`;
+}
+
+function adicionaItemNoCarrinho(produto) {
+  if (!carrinhoItens[produto.id]) {
+    carrinhoItens[produto.id] = produto;
+    carrinhoItens[produto.id].quantidade = 0;
+  }
+  ++carrinhoItens[produto.id].quantidade;
+  renderizaCarrinho();
+  renderCarrinhoTotal();
+}
+
 document.body.addEventListener('click', function (event) {
   const elemento = event.target;
 
@@ -79,13 +101,7 @@ document.body.addEventListener('click', function (event) {
     const index = parseInt(elemento.getAttribute('data-index'), 10);
     const produto = produtos[index];
 
-    if (!carrinhoItens[produto.id]) {
-      carrinhoItens[produto.id] = produto;
-      carrinhoItens[produto.id].quantidade = 1;
-    } else {
-      carrinhoItens[produto.id].quantidade += 1;
-    }
-    renderizaCarrinho();
+    adicionaItemNoCarrinho(produto);
   }
 });
 
